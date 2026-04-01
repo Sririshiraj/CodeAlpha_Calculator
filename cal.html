@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pro Max Calculator</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  height:100vh;display:flex;justify-content:center;align-items:center;
+  font-family:sans-serif;transition:0.3s;
+}
+
+body.dark{background:#0f172a;color:#fff}
+body.light{background:#f1f5f9;color:#000}
+
+.calculator{
+  padding:20px;border-radius:20px;width:340px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+.display{
+  width:100%;height:70px;border:none;outline:none;text-align:right;
+  font-size:28px;padding:10px;border-radius:10px;margin-bottom:10px;
+}
+
+.buttons{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+button{padding:12px;font-size:16px;border:none;border-radius:8px;cursor:pointer}
+button:hover{transform:scale(1.05)}
+
+.operator{background:#38bdf8}
+.equal{background:#22c55e;grid-column:span 2}
+.clear{background:#ef4444;color:#fff}
+
+.history{
+  margin-top:10px;height:100px;overflow:auto;font-size:14px;
+  border-top:1px solid gray;padding-top:5px;
+}
+
+.toggle{
+  margin-bottom:10px;text-align:right;
+}
+
+</style>
+</head>
+<body class="dark">
+
+<div class="calculator">
+
+<div class="toggle">
+  <button onclick="toggleTheme()">🌗</button>
+</div>
+
+<input type="text" id="display" class="display" readonly>
+
+<div class="buttons">
+  <button class="clear" onclick="clearDisplay()">C</button>
+  <button onclick="deleteLast()">DEL</button>
+  <button onclick="append('(')">(</button>
+  <button onclick="append(')')">)</button>
+  <button class="operator" onclick="append('/')">÷</button>
+
+  <button onclick="append('7')">7</button>
+  <button onclick="append('8')">8</button>
+  <button onclick="append('9')">9</button>
+  <button onclick="append('*')">×</button>
+  <button onclick="square()">x²</button>
+
+  <button onclick="append('4')">4</button>
+  <button onclick="append('5')">5</button>
+  <button onclick="append('6')">6</button>
+  <button onclick="append('-')">−</button>
+  <button onclick="sqrt()">√</button>
+
+  <button onclick="append('1')">1</button>
+  <button onclick="append('2')">2</button>
+  <button onclick="append('3')">3</button>
+  <button onclick="append('+')">+</button>
+  <button onclick="percent()">%</button>
+
+  <button onclick="append('0')">0</button>
+  <button onclick="append('.')">.</button>
+  <button class="equal" onclick="calculate()">=</button>
+</div>
+
+<div class="history" id="history"></div>
+
+</div>
+
+<script>
+const display=document.getElementById('display');
+const historyDiv=document.getElementById('history');
+
+function append(val){display.value+=val}
+function clearDisplay(){display.value=''}
+function deleteLast(){display.value=display.value.slice(0,-1)}
+
+function calculate(){
+  try{
+    let result=eval(display.value);
+    addHistory(display.value+" = "+result);
+    display.value=result;
+  }catch{display.value='Error'}
+}
+
+function square(){display.value=Math.pow(display.value,2)}
+function sqrt(){display.value=Math.sqrt(display.value)}
+function percent(){display.value=display.value/100}
+
+function addHistory(text){
+  let p=document.createElement('div');
+  p.textContent=text;
+  historyDiv.appendChild(p);
+}
+
+function toggleTheme(){
+  document.body.classList.toggle('dark');
+  document.body.classList.toggle('light');
+}
+
+// keyboard
+window.addEventListener('keydown',(e)=>{
+  const k=e.key;
+  if(!isNaN(k)||['+','-','*','/','.','%','(',')'].includes(k)) append(k);
+  else if(k==='Enter') calculate();
+  else if(k==='Backspace') deleteLast();
+  else if(k==='Escape') clearDisplay();
+});
+
+</script>
+
+</body>
+</html>
